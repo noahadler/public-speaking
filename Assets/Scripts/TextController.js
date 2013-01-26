@@ -1,5 +1,6 @@
 #pragma strict
 //import System.Collections.Generic;
+var initialized : boolean = false;
 
 var speech : String;
 var speechArray : String[];
@@ -13,12 +14,16 @@ var speechFontMaterial : Material;
 var scrollSpeed : float = 3;
 
 var player : GameObject;
-var controller : PlatformInputController;
 
 function Start () {
 	//speechArray = new List.<String>();
 	player = GameObject.FindGameObjectWithTag('Player');
-	controller = player.GetComponent(PlatformInputController);
+	if (player)
+		Init();
+}
+
+function Init () {
+	//controller = player.GetComponent(PlatformInputController);
 	speechArray = speech.ToLower().Split(' '[0]);
 	speechObjectArray = new GameObject[speechArray.length];
 	speechAnchor = new GameObject('Speech Anchor');
@@ -43,9 +48,15 @@ function Start () {
 		offsetMarker += speechObjectArray[i].renderer.bounds.size.x + 30;
 	}
 	speechAnchor.transform.position = player.transform.position - Vector3(0, player.renderer.bounds.size.y/1.5, 0);
+	initialized = true;
 }
 
 function Update () {
+	if ( !initialized ) {
+		player = GameObject.FindGameObjectWithTag('Player');
+		if (player)
+			Init();
+	}
 //	var playerInput : Vector3 = Vector3(0, controller.directionVector.y, 0) - controller.directionVector;
 //	speechAnchor.transform.position += playerInput*scrollSpeed;
 	
