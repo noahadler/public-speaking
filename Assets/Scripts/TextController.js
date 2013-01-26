@@ -14,10 +14,16 @@ var speechFontMaterial : Material;
 var scrollSpeed : float = 3;
 
 var player : GameObject;
+var nextWord : int;
+
+var gameplay : Gameplay;
+var wordMaterial : Material;
 
 function Start () {
 	//speechArray = new List.<String>();
 	player = GameObject.FindGameObjectWithTag('Player');
+	gameplay = GameObject.FindObjectOfType(Gameplay);
+	nextWord = 0;
 	if (player)
 		Init();
 }
@@ -31,10 +37,12 @@ function Init () {
 	var boxCollider : BoxCollider;
 	var offsetMarker : int = 0;
 	for(var i : int = 0 ; i<speechArray.length ; i++) {
-		speechObjectArray[i] = new GameObject(speechArray[i]);
+		speechObjectArray[i] = new GameObject(''+i);
 		speechObjectArray[i].transform.parent = speechAnchor.transform;
 		speechObjectArray[i].transform.position.x = offsetMarker;
 		speechObjectArray[i].transform.rotation.eulerAngles.z = Random.Range(-20.0,20.0);
+		speechObjectArray[i].tag = 'Words';
+		//speechObjectArray[i].renderer.material = wordMaterial;
 		textMesh = speechObjectArray[i].AddComponent(TextMesh);
 		textMesh.font = speechFont;
 		//textMesh.anchor = TextAnchor.LowerCenter;
@@ -46,7 +54,8 @@ function Init () {
 		boxCollider.size = speechObjectArray[i].renderer.bounds.size;
 		boxCollider.size.z = 1;
 		boxCollider.center = Vector3(speechObjectArray[i].renderer.bounds.size.x/2, -speechObjectArray[i].renderer.bounds.size.y*3/4, 0);
-		offsetMarker += speechObjectArray[i].renderer.bounds.size.x + 30;
+		offsetMarker += speechObjectArray[i].renderer.bounds.size.x + 20;
+		speechObjectArray[i].AddComponent('WordBehavior');
 	}
 	speechAnchor.transform.position = player.transform.position - Vector3(0, player.renderer.bounds.size.y/1.5, 0);
 	initialized = true;
@@ -61,18 +70,17 @@ function Update () {
 //	var playerInput : Vector3 = Vector3(0, controller.directionVector.y, 0) - controller.directionVector;
 //	speechAnchor.transform.position += playerInput*scrollSpeed;
 	
-	var input : Vector3 = Vector3(Input.GetAxis('Horizontal'), 0, 0);
-	player.transform.position += input;
-	
-	if (Input.GetAxis('Jump') != 0) {
-		TryJump();
-	}
 }
 
-function TryJump() {
-	var rigidBody : Rigidbody = player.GetComponent(typeof(Rigidbody));
-	var raycastHit : RaycastHit;
-	if (rigidBody.SweepTest(Vector3.down, raycastHit, 5) == true) {
-		rigidBody.AddForce(10 * Vector3.up, ForceMode.Impulse);
+function LandedOn( index : int ) : boolean {
+	if(nextWord == index){
+		nextWord ++;
+		gameplay.Relax();
+		return true;
+	}
+	else{
+		gameplay.GetNervous();
+		nextWord = index+1;
+		return false;
 	}
 }

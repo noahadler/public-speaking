@@ -46,11 +46,12 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\AimController.js" />
      <Compile Include="Assets\Scripts\Gameplay.js" />
-     <Compile Include="Assets\Scripts\MotionController.js" />
+     <Compile Include="Assets\Scripts\HeartController.js" />
      <Compile Include="Assets\Scripts\PlayerController.js" />
      <Compile Include="Assets\Scripts\Standard Assets\CharacterMotor.js" />
      <Compile Include="Assets\Scripts\Standard Assets\PlatformInputController.js" />
      <Compile Include="Assets\Scripts\TextController.js" />
+     <Compile Include="Assets\Scripts\WordBehavior.js" />
      <None Include="Assets\Fonts\ChardinDoihle\chardin.txt" />
  <Reference Include="Assembly-UnityScript-firstpass">
  <HintPath>Library\ScriptAssemblies\Assembly-UnityScript-firstpass.dll</HintPath>
