@@ -29,6 +29,7 @@ function Start () {
 		speechObjectArray[i] = new GameObject(speechArray[i]);
 		speechObjectArray[i].transform.parent = speechAnchor.transform;
 		speechObjectArray[i].transform.position.x = offsetMarker;
+		speechObjectArray[i].transform.rotation.eulerAngles.z = Random.Range(-20.0,20.0);
 		textMesh = speechObjectArray[i].AddComponent(TextMesh);
 		textMesh.font = speechFont;
 		//textMesh.anchor = TextAnchor.LowerCenter;
@@ -49,5 +50,18 @@ function Update () {
 //	var playerInput : Vector3 = Vector3(0, controller.directionVector.y, 0) - controller.directionVector;
 //	speechAnchor.transform.position += playerInput*scrollSpeed;
 	
-//	var input : Vector3 = Vector3(Input.GetAxis('Horizontal'), 0, 0);
+	var input : Vector3 = Vector3(Input.GetAxis('Horizontal'), 0, 0);
+	player.transform.position += input;
+	
+	if (Input.GetAxis('Jump') != 0) {
+		TryJump();
+	}
+}
+
+function TryJump() {
+	var rigidBody : Rigidbody = player.GetComponent(typeof(Rigidbody));
+	var raycastHit : RaycastHit;
+	if (rigidBody.SweepTest(Vector3.down, raycastHit, 5) == true) {
+		rigidBody.AddForce(10 * Vector3.up, ForceMode.Impulse);
+	}
 }
