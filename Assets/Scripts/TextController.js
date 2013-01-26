@@ -40,11 +40,14 @@ function Start () {
 		boxCollider.size = speechObjectArray[i].renderer.bounds.size;
 		boxCollider.size.z = 1;
 		boxCollider.center = Vector3(speechObjectArray[i].renderer.bounds.size.x/2, -speechObjectArray[i].renderer.bounds.size.y*3/4, 0);
-		offsetMarker += speechObjectArray[i].renderer.bounds.size.x + 3;
+		offsetMarker += speechObjectArray[i].renderer.bounds.size.x + 30;
 	}
+	speechAnchor.transform.position = player.transform.position - Vector3(0, player.renderer.bounds.size.y/1.5, 0);
 }
 
 function Update () {
-	var playerInput : Vector3 = controller.directionVector;
-	speechAnchor.transform.position += playerInput*scrollSpeed;
+//	var playerInput : Vector3 = Vector3(0, controller.directionVector.y, 0) - controller.directionVector;
+//	speechAnchor.transform.position += playerInput*scrollSpeed;
+	
+//	var input : Vector3 = Vector3(Input.GetAxis('Horizontal'), 0, 0);
 }
