@@ -12,11 +12,19 @@ var extraJumpVelocity : float = 10;
 var runMaxVelocity : float = 30;
 var airControlFactor : float = 0.75;
 
+var playerAnimation : Animation;
+var playerAnimObject : GameObject;
+enum AnimState { Idle, Running, Jumping }
+public var animState : AnimState;
 
 function Start () {
 	jumpCooldownTimer = 0;
 	jumps = jumpCount;
 	correctConstraints = rigidbody.constraints;
+	animState = AnimState.Idle;
+	playerAnimation = gameObject.GetComponentInChildren(Animation);
+	playerAnimation.Play('Idle');
+	playerAnimObject = GameObject.Find('PlayerAnimation');
 }
 
 //var constrained  = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezePositionZ | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationY | RigidbodyConstraints.FreezeRotationZ;
@@ -34,6 +42,19 @@ function Update () {
 		jumpCooldownTimer -= Time.deltaTime;
 		
 	transform.position += inputVector*1.4;
+	if(inputVector.x > 0 && playerAnimObject.transform.rotation.eulerAngles.y != 90)
+		playerAnimObject.transform.Rotate(0,90-playerAnimObject.transform.rotation.eulerAngles.y,0);
+	if(inputVector.x < 0 && playerAnimObject.transform.rotation.eulerAngles.y != 270)
+		playerAnimObject.transform.Rotate(0,270-playerAnimObject.transform.rotation.eulerAngles.y,0);
+		
+	if(Mathf.Abs(inputVector.x) == 0 && animState != AnimState.Idle){
+		animState = AnimState.Idle;
+		playerAnimation.Play('Idle');
+	}
+	else if(!jumping && Mathf.Abs(inputVector.x) != 0 && animState != AnimState.Running) {
+		animState = AnimState.Running;
+		playerAnimation.Play('running');
+	}
 }
 
 function TryJump() {
@@ -47,6 +68,9 @@ function TryJump() {
 	jumpCooldownTimer = jumpCooldown;
 	jumping = true;
 	rigidbody.AddForce(jumpVelocity * Vector3.up, ForceMode.Impulse);
+	
+	animState = AnimState.Jumping;
+	playerAnimation.Play('jumping');
 }
 
 function OnCollisionEnter ( collision : Collision ) {

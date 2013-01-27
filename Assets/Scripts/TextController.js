@@ -14,6 +14,7 @@ var speechFontMaterial : Material;
 var scrollSpeed : float = 3;
 
 var player : GameObject;
+var playerAnimation : GameObject;
 var nextWord : int;
 
 var gameplay : Gameplay;
@@ -30,6 +31,7 @@ function Start () {
 
 function Init () {
 	//controller = player.GetComponent(PlatformInputController);
+	playerAnimation = GameObject.Find('Player/PlayerAnimation');
 	speechArray = speech.ToLower().Split(' '[0]);
 	speechObjectArray = new GameObject[speechArray.length];
 	speechAnchor = new GameObject('Speech Anchor');
@@ -57,7 +59,7 @@ function Init () {
 		offsetMarker += speechObjectArray[i].renderer.bounds.size.x + 20;
 		speechObjectArray[i].AddComponent('WordBehavior');
 	}
-	speechAnchor.transform.position = player.transform.position - Vector3(0, player.renderer.bounds.size.y/1.5, 0);
+	speechAnchor.transform.position = player.transform.position - Vector3(0, playerAnimation.transform.localScale.y/1.5, 0);
 	initialized = true;
 }
 

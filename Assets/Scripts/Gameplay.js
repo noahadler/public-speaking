@@ -1,6 +1,7 @@
 #pragma strict
 var video : GameObject;
 var heart : GameObject;
+var heartController : HeartController;
 var hud : GameObject;
 var player : GameObject;
 var playerPrefab : GameObject;
@@ -13,12 +14,14 @@ enum State { Good, Neutral, Bad, Awful, Lost }
 public var state : State;
 
 function Start () {
-	player = GameObject.Instantiate(playerPrefab, playerSpawnPoint.transform.position, Quaternion.identity);
+	player = GameObject.Instantiate(playerPrefab, playerSpawnPoint.transform.position, Quaternion.Euler(0,90, 0));
 	player.name = 'Player';
 	var camera = GameObject.FindGameObjectWithTag('MainCamera');
 	camera.transform.parent = player.transform;
 	state = State.Neutral;
 	textController = GameObject.FindObjectOfType(TextController);
+	heartController = heart.GetComponent(HeartController);
+
 	//Instantiate(
 }
 
@@ -42,14 +45,20 @@ function Relax () {
 function GetNervous () {
 	switch(state){
 		case State.Good:
+			heartController.rates = 1;
+			state = State.Neutral;
 			break;
 		case State.Neutral:
+			heartController.rates = 2;
+			state = State.Bad;
 			break;
 		case State.Bad:
+			heartController.rates = 3;
+			state = State.Awful;
 			break;
 		case State.Awful:
-			break;
-		case State.Lost:
+			heartController.rates = 4;
+			state = State.Lost;
 			break;
 	}
 }
